@@ -71,7 +71,7 @@ const fetchMessagesAPI = async (
 const sendMessageAPI = async (
   sessionId: string,
   content: string
-): Promise<Message> => {
+): Promise<{ sentMessage: Message, message: Message }> => {
   const response = await fetch(`${API_BASE_URL}/ai/chat`, {
     method: 'POST',
     headers: {
@@ -204,13 +204,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     try {
       // 서버에 메시지 전송
-      const sentMessage = await sendMessageAPI(sessionId, content);
+      const { sentMessage, message } = await sendMessageAPI(sessionId, content);
       
       // 임시 메시지를 실제 메시지로 교체
       set((state) => ({
-        messages: state.messages.map((msg) =>
-          msg.id === userMessage.id ? sentMessage : msg
-        ),
+        messages: [...state.messages, sentMessage, message],
         isSending: false,
       }));
 
