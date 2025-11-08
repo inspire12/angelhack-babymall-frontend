@@ -1,12 +1,13 @@
 {
-  "name": "angelhack-babymal-frontend",
+  "name": "angelhack-babycaremall-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:export": "next build && next export"
   },
   "dependencies": {
     "react": "19.2.0",
