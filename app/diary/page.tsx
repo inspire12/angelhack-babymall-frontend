@@ -1,26 +1,85 @@
 'use client';
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Header from "../_component/Header";
+
+interface DiaryDetail {
+  id: number;
+  title: string;
+  date: string;
+  image: string;
+  preview: string;
+}
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export default function DiaryPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const diaryId = searchParams.get('id');
+  
+  const [diary, setDiary] = useState<DiaryDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // This would typically come from route params or props
-  const diary = {
-    id: 1,
-    title: "첫 이유식 성공! 🥄",
-    date: "2024.01.15",
-    image: "🥄",
-    content: `오늘 우리 아기가 처음으로 이유식을 먹었어요. 정말 설레는 순간이었습니다.
+  useEffect(() => {
+    if (!diaryId) {
+      setError('다이어리 ID가 필요합니다');
+      setIsLoading(false);
+      return;
+    }
 
-아침에 이유식을 준비하면서 손이 떨렸어요. 처음이라서 걱정도 되고 기대도 되었거든요. 아기가 처음에는 낯설어했지만, 조금씩 맛을 보더니 이내 좋아하는 모습을 보였어요.
+    const fetchDiary = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`${API_BASE_URL}/baby/diaries/${diaryId}`);
+        
+        if (!response.ok) {
+          throw new Error('다이어리를 불러올 수 없습니다');
+        }
+        
+        const data = await response.json();
+        setDiary(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('Error fetching diary:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-이유식은 당근과 고구마를 갈아서 만들었는데, 아기가 한 숟가락씩 먹는 모습이 너무 귀여웠어요. 처음에는 조금만 먹고 그만두었지만, 나중에는 더 먹고 싶어하는 것 같았어요.
+    fetchDiary();
+  }, [diaryId]);
 
-이제 앞으로 다양한 이유식을 만들어서 아기에게 맛있는 경험을 선사해주고 싶어요. 육아의 즐거움을 느낄 수 있는 하루였습니다.`,
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fff2e0] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">📖</div>
+          <p className="text-[#666666]">다이어리를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !diary) {
+    return (
+      <div className="min-h-screen bg-[#fff2e0] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">😞</div>
+          <p className="text-[#666666] mb-4">다이어리를 불러올 수 없습니다</p>
+          <p className="text-[#999999] text-sm">{error}</p>
+          <button
+            onClick={() => router.back()}
+            className="mt-4 bg-[#ff9900] h-12 px-6 rounded-[20px] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
+            돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fff2e0]">
@@ -49,13 +108,23 @@ export default function DiaryPage() {
 
             {/* Diary Image */}
             <div className="bg-[#fff4e0] rounded-[20px] h-[400px] flex items-center justify-center mb-8">
-              <span className="text-9xl">{diary.image}</span>
+              <img 
+                src={diary.image} 
+                alt={diary.title}
+                className="w-full h-full object-cover rounded-[20px]"
+                onError={(e) => {
+                  // 이미지 로드 실패 시 기본 이모지 표시
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              <span className="text-9xl hidden">📖</span>
             </div>
 
             {/* Diary Content */}
             <div className="prose max-w-none">
               <div className="text-[#333333] text-base leading-relaxed whitespace-pre-line">
-                {diary.content}
+                {diary.preview}
               </div>
             </div>
 
