@@ -3,8 +3,7 @@
 import { useBooleanState } from 'react-simplikit';
 
 export function FAQ() {
-    const [open, openBottomSheet, closeBottomSheet, toggleBottomSheet] =
-    useBooleanState(false);
+    const [open, _1, _2, toggleBottomSheet] = useBooleanState(false);
     
     return (
         <div className="bg-[#fff7eb] rounded-[20px] p-4">
@@ -13,7 +12,7 @@ export function FAQ() {
                 className="w-full flex items-center justify-between mb-1"
             >
                 <h2 className="text-[#666666] text-sm font-semibold">자주 묻는 질문</h2>
-                <span className="text-[#666666] text-lg transition-transform duration-200" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                <span className="text-[#666666] mr-3 text-lg transition-transform duration-200" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
                     ▼
                 </span>
             </button>

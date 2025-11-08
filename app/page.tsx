@@ -23,6 +23,12 @@ export default function Home() {
           >
             쇼핑
           </Link>
+          <Link
+            href="/diaries"
+            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#4d4d4d] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
+          >
+            다이어리
+          </Link>
         </div>
       </header>
 

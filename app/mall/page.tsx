@@ -90,6 +90,12 @@ export default function MallPage() {
           <button className="bg-[#ff9900] h-11 px-6 rounded-[20px] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
             쇼핑
           </button>
+          <Link
+            href="/diaries"
+            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#4d4d4d] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
+          >
+            다이어리
+          </Link>
         </div>
         <button className="bg-[#ff9900] rounded-[25px] w-[50px] h-[50px] flex items-center justify-center text-white text-xl hover:opacity-90 transition-opacity">
           🛒
