@@ -80,13 +80,7 @@ export default function MallPage() {
     <div className="min-h-screen bg-[#fff2e0]">
       {/* Header */}
       <header className="bg-[#fffaf2] border-b border-[#ffe5b2] h-20 flex items-center justify-between px-8">
-        <div className="flex gap-4">
-          <Link
-            href="/"
-            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#666666] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
-          >
-            홈
-          </Link>
+        <div className="flex gap-4"> 
           <Link
             href="/"
             className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#666666] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
