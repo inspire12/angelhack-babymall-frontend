@@ -1,9 +1,14 @@
+'use client';
 import Link from "next/link";
 import UserMessage from "./_component/userMessage";
 import { BotMessage } from "./_component/botMessage";
 import { FAQ } from "./_component/FAQ";
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+
+  }, []);
   return (
     <div className="h-screen max-h-screen bg-[#fff2e0] flex flex-col overflow-hidden">
       {/* Header */}
@@ -22,13 +27,13 @@ export default function Home() {
       </header>
 
       {/* Chat Interface */}
-      <main className="bg-[#fffaf2] flex-1 overflow-hidden flex flex-col">
+      <main className="bg-[#fffaf2] flex-1 overflow-hidden flex flex-col min-h-0">
         <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 min-h-0 p-8">
           {/* Title */}
           <h1 className="text-[#333333] text-lg font-bold mb-4 flex-shrink-0">육아 상담 챗봇</h1>
 
           {/* Chat Messages Area */}
-          <div className="bg-[#fffcfa] rounded-[24px] p-6 mb-6 flex-1 min-h-0 flex flex-col overflow-hidden">
+          <div className="bg-[#fffcfa] rounded-[24px] p-6 mb-6 flex-1 min-h-0 flex flex-col overflow-hidden" style={{ flex: '1 1 0%' }}>
             <div className="overflow-y-auto overflow-x-hidden flex-1 pr-2 space-y-4" style={{ minHeight: 0 }}>
               {/* Welcome Message */}
               <p className="text-gray-500 text-sm mb-6">
