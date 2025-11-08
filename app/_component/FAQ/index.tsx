@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useBooleanState } from 'react-simplikit';
 
 export function FAQ() {
@@ -8,10 +7,10 @@ export function FAQ() {
     useBooleanState(false);
     
     return (
-        <div className="bg-[#fff7eb] rounded-[20px] p-6">
+        <div className="bg-[#fff7eb] rounded-[20px] p-4">
             <button 
                 onClick={toggleBottomSheet}
-                className="w-full flex items-center justify-between mb-4"
+                className="w-full flex items-center justify-between mb-1"
             >
                 <h2 className="text-[#666666] text-sm font-semibold">자주 묻는 질문</h2>
                 <span className="text-[#666666] text-lg transition-transform duration-200" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
@@ -19,7 +18,7 @@ export function FAQ() {
                 </span>
             </button>
             <div 
-                className={`grid grid-cols-2 gap-4 overflow-hidden transition-all duration-300 ease-in-out 
+                className={`grid grid-cols-2 gap-3 overflow-hidden transition-all duration-300 ease-in-out 
                     ${!open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
             >
                 <button className="bg-[#fffcf7] border border-[#ffe0b2] rounded-xl h-12 flex items-center px-4 text-[#4d4d4d] text-xs hover:bg-[#fff7eb] transition-colors">

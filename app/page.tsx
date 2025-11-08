@@ -28,12 +28,12 @@ export default function Home() {
 
       {/* Chat Interface */}
       <main className="bg-[#fffaf2] flex-1 overflow-hidden flex flex-col min-h-0">
-        <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 min-h-0 p-8">
+        <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 min-h-0 px-8 pt-8 pb-4">
           {/* Title */}
-          <h1 className="text-[#333333] text-lg font-bold mb-4 flex-shrink-0">육아 상담 챗봇</h1>
+          <h1 className="text-[#333333] text-lg font-bold mb-2 flex-shrink-0">육아 상담 챗봇</h1>
 
           {/* Chat Messages Area */}
-          <div className="bg-[#fffcfa] rounded-[24px] p-6 mb-6 flex-1 min-h-0 flex flex-col overflow-hidden" style={{ flex: '1 1 0%' }}>
+          <div className="bg-[#fffcfa] rounded-[24px] px-6 pt-2 pb-2 mb-1 flex-1 min-h-0 flex flex-col overflow-hidden" style={{ flex: '1 1 0%' }}>
             <div className="overflow-y-auto overflow-x-hidden flex-1 pr-2 space-y-4" style={{ minHeight: 0 }}>
               {/* Welcome Message */}
               <p className="text-gray-500 text-sm mb-6">
@@ -86,7 +86,7 @@ export default function Home() {
               </div>
             </div>
           {/* Input Area */}
-          <div className="flex flex-col gap-4 flex-shrink-0">
+          <div className="flex flex-col gap-2 flex-shrink-0">
             <div className="">
               <FAQ />
             </div>
