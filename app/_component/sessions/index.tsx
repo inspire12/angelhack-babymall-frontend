@@ -16,7 +16,7 @@ export function Sessions() {
 
   const handleNewSession = async () => {
     try {
-      await createNewSession();
+      await createNewSession('user');
     } catch (error) {
       console.error('Failed to create new session:', error);
     }

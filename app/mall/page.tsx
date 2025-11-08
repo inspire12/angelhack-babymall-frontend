@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Header from "../_component/Header";
 
 const products = [
   {
@@ -79,30 +80,9 @@ export default function MallPage() {
   return (
     <div className="min-h-screen bg-[#fff2e0]">
       {/* Header */}
-      <header className="bg-[#fffaf2] border-b border-[#ffe5b2] h-20 flex items-center justify-between px-8">
-        <div className="flex gap-4"> 
-          <Link
-            href="/"
-            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#666666] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
-          >
-            챗봇
-          </Link>
-          <button className="bg-[#ff9900] h-11 px-6 rounded-[20px] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
-            쇼핑
-          </button>
-          <Link
-            href="/diaries"
-            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#4d4d4d] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
-          >
-            다이어리
-          </Link>
-        </div>
-        <button className="bg-[#ff9900] rounded-[25px] w-[50px] h-[50px] flex items-center justify-center text-white text-xl hover:opacity-90 transition-opacity">
-          🛒
-        </button>
-      </header>
+        <Header activeTab="mall" />
 
-      <div className="flex gap-6 p-6">
+        <div className="flex gap-6 p-6">
         {/* Filter Sidebar */}
         <aside className="bg-[#fff7eb] rounded-[20px] p-6 w-[300px] h-fit sticky top-6">
           <h2 className="text-[#4d4d4d] text-xl font-bold mb-6">필터</h2>

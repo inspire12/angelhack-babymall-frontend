@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Header from "../_component/Header";
 
 const diaries = [
   {
@@ -47,31 +48,14 @@ const diaries = [
   },
 ];
 
+
 export default function DiariesPage() {
   return (
     <div className="min-h-screen bg-[#fff2e0]">
       {/* Header */}
-      <header className="bg-[#fffaf2] border-b border-[#ffe5b2] h-20 flex-shrink-0 flex items-center justify-between px-8">
-        <div className="flex gap-4">
-          <Link
-            href="/"
-            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#4d4d4d] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
-          >
-            챗봇
-          </Link>
-          <Link
-            href="/mall"
-            className="bg-[#ffe5bf] h-11 px-6 rounded-[20px] text-[#4d4d4d] text-sm font-semibold hover:opacity-90 transition-opacity flex items-center"
-          >
-            쇼핑
-          </Link>
-          <button className="bg-[#ff9900] h-11 px-6 rounded-[20px] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
-            다이어리
-          </button>
-        </div>
-      </header>
+        <Header activeTab="diaries" />
 
-      {/* Main Content */}
+        {/* Main Content */}
       <main className="bg-[#fffaf2] p-8">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
