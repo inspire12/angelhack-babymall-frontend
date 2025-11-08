@@ -32,8 +32,6 @@ export default function Home() {
     
     try {
       await sendMessage(messageContent);
-      // 메시지 전송 후 최신 메시지 가져오기
-      await fetchMessages();
     } catch (error) {
       console.error('Failed to send message:', error);
       setInputValue(messageContent); // 실패 시 입력값 복원
@@ -115,7 +113,6 @@ export default function Home() {
               {/* User Message */}
               {
                 messages?.map(message => {
-                  console.log(message);
                   return message.role === 'USER' ? <UserMessage message={message.content} /> : <BotMessage message={message.content} />
                 })
               }
@@ -129,12 +126,15 @@ export default function Home() {
             <div className="flex gap-4 items-center">
               <div className="flex-1 bg-white border-2 border-[#ffd999] rounded-[30px] h-[70px] px-6 flex items-center">
                 <input
+                  onKeyDown={handleKeyPress}
+                  onChange={(e) => setInputValue(e.target.value)}
                   type="text"
                   placeholder="메시지를 입력하세요..."
                   className="flex-1 outline-none text-sm text-[#999999] bg-transparent"
+                  value={inputValue}
                 />
               </div>
-              <button id="send" className="bg-[#ff9900] rounded-[30px] w-[50px] h-[50px] flex items-center justify-center text-white text-lg hover:opacity-90 transition-opacity">
+              <button onClick={handleSendMessage}  id="send" className="bg-[#ff9900] rounded-[30px] w-[50px] h-[50px] flex items-center justify-center text-white text-lg hover:opacity-90 transition-opacity">
                 ➤
               </button>
             </div>

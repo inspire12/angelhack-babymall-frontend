@@ -208,7 +208,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       
       // 임시 메시지를 실제 메시지로 교체
       set((state) => ({
-        messages: [...state.messages, sentMessage, message],
+        messages: [...(state.messages.filter((msg) => msg.id !== userMessage.id)), sentMessage, message],
         isSending: false,
       }));
 
