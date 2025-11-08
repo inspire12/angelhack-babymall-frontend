@@ -178,7 +178,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   // 메시지 전송
-  sendMessage: async (content: string, userId: String) => {
+  sendMessage: async (content: string, userId: string) => {
     const { currentSessionId, createNewSession } = get();
     let sessionId = currentSessionId;
 
