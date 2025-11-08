@@ -1,7 +1,7 @@
 'use client';
 import Link from "next/link";
 import UserMessage from "./_component/userMessage";
-import { BotMessage } from "./_component/botMessage";
+import BotMessage from "./_component/botMessage";
 import { FAQ } from "./_component/FAQ";
 import { Sessions } from "./_component/sessions";
 import { useEffect, useState } from "react";
@@ -9,14 +9,43 @@ import { useChatStore } from "./_state/chat";
 
 export default function Home() {
   const [isSessionsOpen, setIsSessionsOpen] = useState(true);
-  const { messages, currentSessionId, fetchMessages } = useChatStore();
+  const [inputValue, setInputValue] = useState('');
+  const { messages, currentSessionId, fetchMessages, sendMessage, isSending, createNewSession } = useChatStore();
+  
   useEffect(() => {
+    if (currentSessionId) {
       fetchMessages();
-  }, [currentSessionId]);
-  console.log(messages)
-  useEffect(() => {
+    }
+  }, [currentSessionId, fetchMessages]);
 
-  }, []);
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || isSending) return;
+
+    // 세션이 없으면 새로 생성
+    let sessionId = currentSessionId;
+    if (!sessionId) {
+      sessionId = await createNewSession();
+    }
+
+    const messageContent = inputValue.trim();
+    setInputValue(''); // 입력 필드 초기화
+    
+    try {
+      await sendMessage(messageContent);
+      // 메시지 전송 후 최신 메시지 가져오기
+      await fetchMessages();
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setInputValue(messageContent); // 실패 시 입력값 복원
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
     <div className="h-screen max-h-screen bg-[#fff2e0] flex flex-col overflow-hidden">
@@ -105,7 +134,7 @@ export default function Home() {
                   className="flex-1 outline-none text-sm text-[#999999] bg-transparent"
                 />
               </div>
-              <button className="bg-[#ff9900] rounded-[30px] w-[50px] h-[50px] flex items-center justify-center text-white text-lg hover:opacity-90 transition-opacity">
+              <button id="send" className="bg-[#ff9900] rounded-[30px] w-[50px] h-[50px] flex items-center justify-center text-white text-lg hover:opacity-90 transition-opacity">
                 ➤
               </button>
             </div>

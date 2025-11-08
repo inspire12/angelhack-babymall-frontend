@@ -72,12 +72,12 @@ const sendMessageAPI = async (
   sessionId: string,
   content: string
 ): Promise<Message> => {
-  const response = await fetch(`${API_BASE_URL}/sessions/${sessionId}/messages`, {
+  const response = await fetch(`${API_BASE_URL}/ai/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({ sessionId,content }),
   });
   if (!response.ok) {
     throw new Error('Failed to send message');
@@ -193,6 +193,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       id: `temp-${Date.now()}`,
       content,
       createdAt: new Date().toISOString(),
+      role: 'USER',
       sessionId,
     };
 
