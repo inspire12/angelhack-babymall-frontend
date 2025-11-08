@@ -36,10 +36,10 @@ interface ChatState {
   fetchSessions: () => Promise<void>;
   selectSession: (sessionId: string) => Promise<void>;
   fetchMessages: (page?: number) => Promise<void>;
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content: string, userId: string) => Promise<void>;
   addMessage: (message: Message) => void;
   resetMessages: () => void;
-  createNewSession: () => Promise<string>;
+  createNewSession: (userId: string) => Promise<string>;
 }
 
 // API 호출 함수들 (실제 API 엔드포인트에 맞게 수정 필요)
@@ -85,12 +85,13 @@ const sendMessageAPI = async (
   return response.json();
 };
 
-const createSessionAPI = async (): Promise<Session> => {
+const createSessionAPI = async (userId: string): Promise<Session> => {
   const response = await fetch(`${API_BASE_URL}/sessions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({ userId }),
   });
   if (!response.ok) {
     throw new Error('Failed to create session');
@@ -124,7 +125,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   // Session 선택 및 메시지 로드
   selectSession: async (sessionId: string) => {
     const { currentSessionId } = get();
-    
+
     // 이미 같은 세션이 선택되어 있으면 스킵
     if (currentSessionId === sessionId) {
       return;
@@ -142,12 +143,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
   // 메시지 페이징으로 가져오기 (최신순)
   fetchMessages: async () => {
     const { currentSessionId, messages } = get();
-
     if (!currentSessionId) {
       return;
     }
-
-
+    console.log('currentSessionId', JSON.stringify(currentSessionId));
     try {
       const lastMessageId = messages[messages.length - 1]?.messageId
       set({ isLoading: true });
@@ -155,7 +154,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         currentSessionId,
         lastMessageId,
       );
-    
+
 
       // 최신순이므로 기존 메시지 앞에 추가 (또는 교체)
       if (!lastMessageId) {
@@ -179,18 +178,19 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   // 메시지 전송
-  sendMessage: async (content: string) => {
+  sendMessage: async (content: string, userId: String) => {
     const { currentSessionId, createNewSession } = get();
     let sessionId = currentSessionId;
 
     // 세션이 없으면 새로 생성
     if (!sessionId) {
-      sessionId = await createNewSession();
+      sessionId = await createNewSession(userId);
     }
 
     // 사용자 메시지 즉시 추가 (optimistic update)
     const userMessage: Message = {
       id: `temp-${Date.now()}`,
+      messageId: `temp-${Date.now()}`,
       content,
       createdAt: new Date().toISOString(),
       role: 'USER',
@@ -205,7 +205,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       // 서버에 메시지 전송
       const { sentMessage, message } = await sendMessageAPI(sessionId, content);
-      
+
       // 임시 메시지를 실제 메시지로 교체
       set((state) => ({
         messages: [...(state.messages.filter((msg) => msg.id !== userMessage.id)), sentMessage, message],
@@ -245,12 +245,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   // 새 세션 생성
-  createNewSession: async () => {
+  createNewSession: async (userId: string) => {
     try {
-      const newSession = await createSessionAPI();
+      const newSession = await createSessionAPI(userId);
       set((state) => ({
         sessions: [newSession, ...state.sessions],
-        currentSessionId: newSession.id,
+        currentSessionId: newSession.sessionId,
         messages: [],
         page: 1,
         hasMore: true,

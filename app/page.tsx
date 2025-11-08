@@ -4,13 +4,14 @@ import UserMessage from "./_component/userMessage";
 import BotMessage from "./_component/botMessage";
 import { FAQ } from "./_component/FAQ";
 import { Sessions } from "./_component/sessions";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "./_state/chat";
 
 export default function Home() {
   const [isSessionsOpen, setIsSessionsOpen] = useState(true);
   const [inputValue, setInputValue] = useState('');
   const { messages, currentSessionId, fetchMessages, sendMessage, isSending, createNewSession } = useChatStore();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     if (currentSessionId) {
@@ -18,20 +19,30 @@ export default function Home() {
     }
   }, [currentSessionId, fetchMessages]);
 
+  // 자동 스크롤 함수
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // 메시지가 변경될 때마다 자동 스크롤
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isSending) return;
 
     // 세션이 없으면 새로 생성
     let sessionId = currentSessionId;
     if (!sessionId) {
-      sessionId = await createNewSession();
+      sessionId = await createNewSession('user');
     }
 
     const messageContent = inputValue.trim();
     setInputValue(''); // 입력 필드 초기화
     
     try {
-      await sendMessage(messageContent);
+      await sendMessage(messageContent, 'user'); // userId를 'user'로 설정
     } catch (error) {
       console.error('Failed to send message:', error);
       setInputValue(messageContent); // 실패 시 입력값 복원
@@ -110,12 +121,17 @@ export default function Home() {
                 👋 안녕하세요! 육아에 관한 궁금한 점을 물어보세요.
               </p>
 
-              {/* User Message */}
+              {/* Messages */}
               {
-                messages?.map(message => {
-                  return message.role === 'USER' ? <UserMessage message={message.content} /> : <BotMessage message={message.content} />
+                messages?.map((message, index) => {
+                  return message.role === 'USER' ? 
+                    <UserMessage key={message.id || index} message={message.content} /> : 
+                    <BotMessage key={message.id || index} message={message.content} />
                 })
               }
+              
+              {/* 스크롤 대상 지점 */}
+              <div ref={messagesEndRef} />
               </div>
             </div>
           {/* Input Area */}
