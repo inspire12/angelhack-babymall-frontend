@@ -3,12 +3,21 @@ import Link from "next/link";
 import UserMessage from "./_component/userMessage";
 import { BotMessage } from "./_component/botMessage";
 import { FAQ } from "./_component/FAQ";
-import { useEffect } from "react";
+import { Sessions } from "./_component/sessions";
+import { useEffect, useState } from "react";
+import { useChatStore } from "./_state/chat";
 
 export default function Home() {
+  const [isSessionsOpen, setIsSessionsOpen] = useState(true);
+  const { messages, currentSessionId, fetchMessages } = useChatStore();
+  useEffect(() => {
+      fetchMessages();
+  }, [currentSessionId]);
+  console.log(messages)
   useEffect(() => {
 
   }, []);
+
   return (
     <div className="h-screen max-h-screen bg-[#fff2e0] flex flex-col overflow-hidden">
       {/* Header */}
@@ -33,8 +42,36 @@ export default function Home() {
       </header>
 
       {/* Chat Interface */}
-      <main className="bg-[#fffaf2] flex-1 overflow-hidden flex flex-col min-h-0">
-        <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 min-h-0 px-8 pt-8 pb-4">
+      <main className="bg-[#fffaf2] flex-1 overflow-hidden flex flex-row min-h-0 gap-0 p-4">
+        {/* Sidebar - Sessions */}
+        <aside className={`flex flex-col transition-all duration-300 ease-in-out ${
+          isSessionsOpen ? 'w-[300px]' : 'w-0'
+        } overflow-hidden flex-shrink-0`}>
+          <div className={`bg-[#fff7eb] rounded-[20px] p-4 h-full flex flex-col ${
+            isSessionsOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          } transition-opacity duration-300`}>
+            <button
+              onClick={() => setIsSessionsOpen(!isSessionsOpen)}
+              className="w-full flex items-center justify-between mb-4"
+            >
+              <h2 className="text-[#666666] text-sm font-semibold">대화 목록</h2>
+            </button>
+            {isSessionsOpen && <Sessions />}
+          </div>
+        </aside>
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => setIsSessionsOpen(!isSessionsOpen)}
+          className={`self-start mt-2 bg-[#ff9900] rounded-r-[20px] w-8 h-12 flex items-center justify-center text-white text-sm hover:opacity-90 transition-opacity flex-shrink-0 ${
+            isSessionsOpen ? '' : 'rounded-l-[20px]'
+          }`}
+        >
+          {isSessionsOpen ? '◀' : '▶'}
+        </button>
+
+        {/* Main Chat Area */}
+        <div className="flex-1 min-w-0 flex flex-col flex-1 min-h-0 px-3 pt-4 pb-4">
           {/* Title */}
           <h1 className="text-[#333333] text-lg font-bold mb-2 flex-shrink-0">육아 상담 챗봇</h1>
 
@@ -47,48 +84,12 @@ export default function Home() {
               </p>
 
               {/* User Message */}
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-
-              {/* Bot Response */}
-              <BotMessage message="
-              6개월 아기의 수면 패턴이 변하는 시기입니다. 다음과 같은 방법을 시도해보세요:
-              
-                    <p>• 규칙적인 수면 일정 유지</p>
-                    <p>• 잠자리 전 루틴 만들기</p>
-                    <p>• 적절한 온도와 조명 조절</p>
-              " />        
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
-              <UserMessage message="6개월 아기가 잘 안 잠들어요" />
+              {
+                messages?.map(message => {
+                  console.log(message);
+                  return message.role === 'USER' ? <UserMessage message={message.content} /> : <BotMessage message={message.content} />
+                })
+              }
               </div>
             </div>
           {/* Input Area */}

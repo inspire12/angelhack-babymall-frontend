@@ -1,17 +1,20 @@
 import { create } from 'zustand';
 
 // 타입 정의
-export type MessageRole = 'user' | 'bot';
+export type MessageRole = 'USER' | 'SYSTEM';
 
 export interface Message {
   id: string;
+  messageId: string;
   content: string;
   createdAt: string;
   sessionId: string;
+  role: MessageRole;
 }
 
 export interface Session {
   id: string;
+  sessionId: string;
   title: string;
   createdAt: string;
   updatedAt: string;
@@ -52,17 +55,17 @@ const fetchSessionsAPI = async (): Promise<Session[]> => {
 
 const fetchMessagesAPI = async (
   sessionId: string,
-  lastMessageid: string,
-  page: number,
-  pageSize: number
-): Promise<{ messages: Message[]; hasMore: boolean }> => {
+  lastMessageid?: string,
+): Promise<Message[]> => {
   const response = await fetch(
-    `${API_BASE_URL}/sessions/${sessionId}/messages?page=${page}&pageSize=${pageSize}&sort=desc&lastMessageid=${lastMessageid}`
+    `${API_BASE_URL}/sessions/${sessionId}/messages${lastMessageid ? `?lastMessageid=${lastMessageid}` : ''}`
   );
   if (!response.ok) {
     throw new Error('Failed to fetch messages');
   }
-  return response.json();
+  const ret = await response.json()
+
+  return ret;
 };
 
 const sendMessageAPI = async (
@@ -134,49 +137,38 @@ export const useChatStore = create<ChatState>((set, get) => ({
       hasMore: true,
     });
 
-    // 메시지 가져오기
-    await get().fetchMessages(1);
   },
 
   // 메시지 페이징으로 가져오기 (최신순)
-  fetchMessages: async (pageNum?: number) => {
-    const { currentSessionId, page, pageSize, messages, hasMore } = get();
+  fetchMessages: async () => {
+    const { currentSessionId, messages } = get();
 
     if (!currentSessionId) {
       return;
     }
 
-    // 더 이상 가져올 메시지가 없으면 스킵
-    if (!hasMore && pageNum === undefined) {
-      return;
-    }
-
-    const targetPage = pageNum || page;
 
     try {
+      const lastMessageId = messages[messages.length - 1]?.messageId
       set({ isLoading: true });
-      const { messages: newMessages, hasMore: more } = await fetchMessagesAPI(
+      const newMessages = await fetchMessagesAPI(
         currentSessionId,
-        messages[messages.length - 1]?.id,
-        targetPage,
-        pageSize
+        lastMessageId,
       );
+    
 
       // 최신순이므로 기존 메시지 앞에 추가 (또는 교체)
-      if (targetPage === 1) {
+      if (!lastMessageId) {
         // 첫 페이지는 교체
         set({
           messages: newMessages,
           page: 1,
-          hasMore: more,
           isLoading: false,
         });
       } else {
         // 다음 페이지는 기존 메시지 뒤에 추가 (오래된 메시지)
         set({
           messages: [...messages, ...newMessages],
-          page: targetPage,
-          hasMore: more,
           isLoading: false,
         });
       }
